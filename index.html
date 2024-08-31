@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菏泽市</title>
+    <link href="element-index.css" rel="stylesheet" />
+    <script src="vue.min.js"></script>
+    <script src="element-index.js"></script>
+    <script src="echarts.min.js"></script>
+    <script src="heze.js"></script>
+    <style>
+        input {
+            width: 100%;
+            outline: none;
+            border: none;
+            font-size: 22px;
+        }
+
+        #configuration {
+            position: absolute;
+            right: 0;
+            z-index: 999;
+        }
+
+        .about {
+            position: absolute;
+            width: 98%;
+            height: 100%;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="about">
+        <input v-model=title />
+        <div id="main" class="map" ref="mapChart" style="width: 100%;height:90%;"></div>
+    </div>
+    <script>
+        var app = new Vue({
+            el: ".about",
+            data: {
+                title: "2021-2024.6月 乙肝感染产妇数",
+                data: [{
+                    name: '曹县',
+                    value: 8
+                },
+                {
+                    name: '成武县',
+                    value: 0
+                },
+                {
+                    name: '单县',
+                    value: 1
+                },
+                {
+                    name: '定陶区',
+                    value: 1
+                },
+                {
+                    name: '东明县',
+                    value: 4
+                },
+                {
+                    name: '巨野县',
+                    value: 2
+                },
+                {
+                    name: '鄄城县',
+                    value: 6
+                },
+                {
+                    name: '牡丹区(含鲁西新区)',
+                    value: 8
+                },
+                {
+                    name: '郓城县',
+                    value: 3
+                }
+                ],
+            },
+            mounted() {
+                var chartDom = document.getElementById('main');
+                var myChart = echarts.init(chartDom);
+                var option;
+                // 初始化统计图对象
+                echarts.registerMap('hz', hezeData[0]);
+                myChart.setOption(
+                    (option = {
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: '{b}<br/>{c}'
+                        },
+                        toolbox: {
+                            show: true,
+                            orient: 'vertical',
+                            left: 'right',
+                            top: 'center',
+                            feature: {
+                                dataView: { readOnly: false },
+                                restore: {},
+                                saveAsImage: {}
+                            }
+                        },
+                        visualMap: {
+                            min: 0,
+                            max: 10,
+                            text: ['High', 'Low'],
+                            realtime: false,
+                            calculable: true,
+                            inRange: {
+                                color: ['lightskyblue', 'yellow', 'orangered']
+                            }
+                        },
+                        label: {
+                            show: true,
+                            color: "white",
+                            formatter: function (params) {
+                                return params.name + "\n\n" + params.value;
+                            },
+                        },
+
+                        series: [
+                            {
+                                type: 'map',
+                                map: 'hz',
+                                label: {
+                                    show: true
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        label: {
+                                            show: true
+                                        }
+                                    }
+                                },
+                                data: this.data,
+                                nameMap: {
+                                    "牡丹区": "牡丹区(含鲁西新区)",
+                                }
+                            }
+                        ]
+                    })
+                );
+                option && myChart.setOption(option, true);
+            },
+            methods: {
+                configuration() {
+                    console.log(111)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
